@@ -1,0 +1,33 @@
+# OS/editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Root env files
+.env
+
+# Frontend (Vue/Node) - app
+app/node_modules/
+app/dist/
+app/.env.local
+app/.env
+app/.cache/
+app/coverage/
+
+# Backend (Laravel/PHP) - backend
+backend/vendor/
+backend/node_modules/
+backend/storage/
+backend/public/storage
+backend/.env
+backend/.phpunit.result.cache
+
+# Logs and temp
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tmp
+*.swp
