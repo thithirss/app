@@ -15,14 +15,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // Verifica se o usuário já existe antes de criar
-        if (!User::where('email', 'test@example.com')->exists()) {
-            User::factory()->create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
+        // Usuário admin
+        if (!User::where('email', 'admin@travelrep.local')->exists()) {
+            $admin = User::factory()->create([
+                'name' => 'Admin',
+                'email' => 'admin@travelrep.local',
             ]);
+            $admin->is_admin = true;
+            $admin->save();
+        }
+
+        // Usuário padrão
+        if (!User::where('email', 'user@travelrep.local')->exists()) {
+            $user = User::factory()->create([
+                'name' => 'Usuário',
+                'email' => 'user@travelrep.local',
+            ]);
+            // is_admin padrão é false (migration define default)
         }
     }
 }

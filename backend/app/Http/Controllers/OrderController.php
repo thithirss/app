@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Order;
+use Illuminate\Http\Request;
+
+class OrderController extends Controller
+{
+    /**
+     * List orders with optional status filter. Admins see all; users see their own.
+     */
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        $status = $request->query('status');
+
+        $query = Order::query();
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if (!(bool) $user->is_admin) {
+            $query->where('user_id', $user->id);
+        }
+
+        $orders = $query->orderByDesc('created_at')->get();
+
+        return response()->json($orders);
+    }
+
+    /**
+     * Create a new order assigned to the authenticated user.
+     */
+    public function store(Request $request)
+    {
+        $user = $request->user();
+
+        // Support both form-urlencoded and JSON bodies reliably
+        $payload = $request->all();
+        if (empty($payload)) {
+            $payload = $request->json()->all();
+        }
+
+        $validator = \Validator::make($payload, [
+            'title' => ['required','string','max:255'],
+            'description' => ['nullable','string'],
+            'destination' => ['nullable','string','max:255'],
+            'status' => ['nullable','string','in:pending,approved,cancelled,in_progress'],
+        ]);
+        $validator->validate();
+        $data = $validator->validated();
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'destination' => $data['destination'] ?? null,
+            'status' => $data['status'] ?? 'pending',
+        ]);
+
+        return response()->json($order, 201);
+    }
+
+    /**
+     * Update the status of an order. Admins can update any; users can update their own.
+     */
+    public function updateStatus(Request $request, int $id)
+    {
+        $user = $request->user();
+        $payload = $request->all();
+        if (empty($payload)) {
+            $payload = $request->json()->all();
+        }
+        $validator = \Validator::make($payload, [
+            'status' => ['required','string','in:pending,approved,cancelled,in_progress'],
+        ]);
+        $validator->validate();
+        $data = $validator->validated();
+
+        $order = Order::findOrFail($id);
+
+        if (!(bool) $user->is_admin && $order->user_id !== $user->id) {
+            return response()->json(['message' => 'Não autorizado'], 403);
+        }
+
+        $order->status = $data['status'];
+        $order->save();
+
+        return response()->json(['message' => 'Status atualizado', 'order' => $order]);
+    }
+}

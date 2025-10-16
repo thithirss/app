@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000';
+// Use o proxy de desenvolvimento configurado em vue.config.js
+// Força uso de "/api" para evitar envs incorretos (ex.: localhost:3000)
+const API_BASE_URL = '/api';
 const TOKEN_KEY = 'auth_token';
 
 export function getToken() {
@@ -23,6 +25,8 @@ async function request(path, options = {}) {
 
   const finalHeaders = {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
     ...headers,
   };
 
@@ -69,17 +73,21 @@ export const api = {
   },
 
   createOrder(payload) {
+    const form = new URLSearchParams(payload);
     return request('/orders', {
       method: 'POST',
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form,
       auth: true,
     });
   },
 
   updateOrderStatus(id, status) {
+    const form = new URLSearchParams({ status });
     return request(`/orders/${id}/status`, {
       method: 'PATCH',
-      body: JSON.stringify({ status }),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form,
       auth: true,
     });
   },

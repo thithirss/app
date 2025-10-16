@@ -29,6 +29,9 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
+      DB_DATABASE: travelrep
+      DB_USERNAME: travel
+      DB_PASSWORD: travel123
     volumes:
       - ./backend:/var/www/html
       - backend_vendor:/var/www/html/vendor
@@ -69,6 +72,9 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
+      DB_DATABASE: travelrep
+      DB_USERNAME: travel
+      DB_PASSWORD: travel123
     volumes:
       - ./backend:/var/www/html
       - backend_vendor:/var/www/html/vendor
