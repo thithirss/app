@@ -43,20 +43,27 @@ class OrderController extends Controller
         }
 
         $validator = \Validator::make($payload, [
-            'title' => ['required','string','max:255'],
-            'description' => ['nullable','string'],
-            'destination' => ['nullable','string','max:255'],
-            'status' => ['nullable','string','in:pending,approved,cancelled,in_progress'],
+            'id' => ['nullable', 'string', 'max:255'],
+            'requesterName' => ['required', 'string', 'max:255'],
+            'destination' => ['required', 'string', 'max:255'],
+            'departureDate' => ['required', 'date'],
+            'returnDate' => ['required', 'date'],
+            'description' => ['nullable', 'string'],
+            'status' => ['nullable', 'string', 'in:solicitado,aprovado,cancelado,em_andamento,pending,approved,cancelled,in_progress'],
         ]);
         $validator->validate();
         $data = $validator->validated();
 
         $order = Order::create([
             'user_id' => $user->id,
-            'title' => $data['title'],
+            'title' => $data['requesterName'] . ' - ' . $data['destination'],
+            'requester_name' => $data['requesterName'],
+            'destination' => $data['destination'],
+            'departure_date' => $data['departureDate'],
+            'return_date' => $data['returnDate'],
             'description' => $data['description'] ?? null,
-            'destination' => $data['destination'] ?? null,
-            'status' => $data['status'] ?? 'pending',
+            'status' => $data['status'] ?? 'solicitado',
+            'order_id' => $data['id'] ?? ('ORD-' . time()),
         ]);
 
         return response()->json($order, 201);

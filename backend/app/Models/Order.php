@@ -15,6 +15,10 @@ class Order extends Model
         'description',
         'destination',
         'status',
+        'order_id',
+        'requester_name',
+        'departure_date',
+        'return_date',
     ];
 
     public function user()
