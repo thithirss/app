@@ -1,15 +1,16 @@
 <template>
-  <nav>
-    <!-- <router-link to="/"><i class="fas fa-home"></i> Home</router-link> -->
-    <router-link to="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</router-link>
-    <router-link to="/orders/new"><i class="fas fa-plus-circle"></i> Cadastrar solicitação de viagem</router-link>
-    <!-- <router-link to="/about">About</router-link> |
-    <router-link to="/servicos">Serviços</router-link> -->
-    <span style="margin-left: auto">
-      <notification-center v-if="isAuthenticated" />
-      <router-link v-if="!isAuthenticated" to="/login"><i class="fas fa-sign-in-alt"></i> Login</router-link>
-      <button v-else class="logout" @click="logout"><i class="fas fa-sign-out-alt"></i> Sair</button>
-    </span>
+  <nav v-if="showNavbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <router-link to="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</router-link>
+        <router-link to="/orders/new"><i class="fas fa-plus-circle"></i> Cadastrar solicitação de viagem</router-link>
+      </div>
+      <div class="nav-right">
+        <notification-center v-if="isAuthenticated" />
+        <router-link v-if="!isAuthenticated" to="/login"><i class="fas fa-sign-in-alt"></i> Login</router-link>
+        <button v-else class="logout" @click="logout"><i class="fas fa-sign-out-alt"></i> Sair</button>
+      </div>
+    </div>
   </nav>
   <div class="content-container">
     <router-view/>
@@ -30,6 +31,9 @@ export default {
   computed: {
     isAuthenticated() {
       return !!localStorage.getItem('auth_token')
+    },
+    showNavbar() {
+      return this.$route.path !== '/login'
     }
   },
   methods: {
@@ -53,48 +57,81 @@ export default {
 }
 
 nav {
-  padding: 20px 30px;
-  background-color: white;
-  box-shadow: var(--box-shadow);
+  padding: 0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 70px;
+}
+
+.nav-left, .nav-right {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 15px;
 }
 
 nav a {
-  font-weight: bold;
-  color: var(--text-color);
+  font-weight: 600;
+  color: #4a5568;
   text-decoration: none;
-  padding: 8px 12px;
-  border-radius: var(--border-radius);
-  margin: 0 5px;
-  transition: all var(--transition-speed);
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+nav a i {
+  font-size: 1.1rem;
 }
 
 nav a:hover {
-  background-color: var(--primary-light);
-  color: var(--primary-dark);
+  background-color: #f0f9ff;
+  color: var(--primary-color);
+  transform: translateY(-2px);
 }
 
 nav a.router-link-exact-active {
   color: white;
   background-color: var(--primary-color);
-  box-shadow: 0 2px 5px rgba(100, 208, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(100, 208, 255, 0.4);
 }
 
 button.logout { 
   border: none; 
   background: transparent; 
-  color: var(--error-color); 
-  font-weight: bold; 
+  color: #e53e3e; 
+  font-weight: 600;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: var(--border-radius);
-  transition: all var(--transition-speed);
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+button.logout i {
+  font-size: 1.1rem;
 }
 
 button.logout:hover {
-  background-color: #ffebee;
+  background-color: #fff5f5;
+  transform: translateY(-2px);
 }
 
 .content-container {

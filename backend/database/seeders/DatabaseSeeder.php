@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             $admin = User::factory()->create([
                 'name' => 'Admin',
                 'email' => 'admin@travelrep.local',
+                'password' => bcrypt('password'),
             ]);
             $admin->is_admin = true;
             $admin->save();
@@ -30,6 +31,7 @@ class DatabaseSeeder extends Seeder
             $user = User::factory()->create([
                 'name' => 'Usuário',
                 'email' => 'user@travelrep.local',
+                'password' => bcrypt('password'),
             ]);
             // is_admin padrão é false (migration define default)
         }
