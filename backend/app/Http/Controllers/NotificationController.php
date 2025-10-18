@@ -107,13 +107,24 @@ class NotificationController extends Controller
         
         $order = Order::findOrFail($request->order_id);
         
+        // Tradução dos status
+        $statusTraducao = [
+            'pending' => 'Pendente',
+            'approved' => 'Aprovado',
+            'cancelled' => 'Cancelado',
+            'in_progress' => 'Em Andamento',
+            'completed' => 'Concluído'
+        ];
+        
+        $statusTraduzido = $statusTraducao[$request->status] ?? $request->status;
+        
         $notification = new Notification();
-        $notification->title = 'Status do Pedido Atualizado';
-        $notification->message = "O pedido #{$order->id} foi atualizado para {$request->status}";
+        $notification->title = 'Status da Viagem Atualizado';
+        $notification->message = "A viagem #{$order->id} foi atualizada para {$statusTraduzido}";
         $notification->user_id = $order->user_id;
         $notification->order_id = $order->id;
         $notification->type = 'info';
-        $notification->global = false; // Notificação visível apenas para o usuário do pedido
+        $notification->global = false; // Notificação visível apenas para o usuário da viagem
         $notification->read = false;
         $notification->save();
         

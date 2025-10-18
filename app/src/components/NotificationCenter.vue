@@ -10,14 +10,6 @@
     <div v-if="showPanel" class="notification-panel">
       <div class="notification-panel-header">
         <h3>Notificações</h3>
-        <div class="notification-actions">
-          <button v-if="notifications.length > 0" @click="markAllAsRead" class="action-btn">
-            Marcar todas como lidas
-          </button>
-          <button v-if="notifications.length > 0" @click="clearAll" class="action-btn">
-            Limpar todas
-          </button>
-        </div>
       </div>
       
       <div class="notification-list">
@@ -34,13 +26,7 @@
           <div class="notification-item-content">
             <div class="notification-item-title">{{ notification.title }}</div>
             <div class="notification-item-message">{{ notification.message }}</div>
-            <div class="notification-item-time">
-              {{ formatTime(notification.timestamp) }}
-            </div>
           </div>
-          <button @click.stop="removeNotification(notification.id)" class="delete-btn">
-            &times;
-          </button>
         </div>
       </div>
     </div>
@@ -149,7 +135,7 @@ export default {
         this.fetchNotificationsFromServer();
       }
       
-      // Se a notificação estiver relacionada a um pedido, navegar para a página de detalhes
+      // Se a notificação estiver relacionada a uma viagem, navegar para a página de detalhes
       if (notification.order_id) {
         this.$router.push({ name: 'OrderDetails', params: { id: notification.order_id } });
         this.showPanel = false;
@@ -197,6 +183,11 @@ export default {
       }
     },
     formatTime(timestamp) {
+      // Verificar se o timestamp é válido
+      if (!timestamp || isNaN(new Date(timestamp).getTime())) {
+        return 'Agora';
+      }
+      
       const date = new Date(timestamp);
       const now = new Date();
       const diffMs = now - date;
@@ -213,7 +204,7 @@ export default {
       } else if (diffDays < 7) {
         return `${diffDays} dias atrás`;
       } else {
-        return date.toLocaleDateString();
+        return date.toLocaleDateString('pt-BR');
       }
     }
   }

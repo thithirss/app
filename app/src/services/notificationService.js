@@ -63,25 +63,36 @@ export const notificationService = {
   async addOrderStatusNotification(order, newStatus) {
     let title, message, type;
     
+    // Tradução dos status
+    const statusTraducao = {
+      'pending': 'Pendente',
+      'approved': 'Aprovado',
+      'cancelled': 'Cancelado',
+      'in_progress': 'Em Andamento',
+      'completed': 'Concluído'
+    };
+    
+    const statusTraduzido = statusTraducao[newStatus] || newStatus;
+    
     switch (newStatus) {
       case 'approved':
-        title = 'Pedido Aprovado';
-        message = `Seu pedido para ${order.destination} foi aprovado!`;
+        title = 'Viagem Aprovada';
+        message = `Sua viagem para ${order.destination} foi aprovada!`;
         type = 'success';
         break;
-      case 'canceled':
-        title = 'Pedido Cancelado';
-        message = `Seu pedido para ${order.destination} foi cancelado.`;
+      case 'cancelled':
+        title = 'Viagem Cancelada';
+        message = `Sua viagem para ${order.destination} foi cancelada.`;
         type = 'error';
         break;
       case 'completed':
-        title = 'Pedido Concluído';
-        message = `Seu pedido para ${order.destination} foi concluído com sucesso!`;
+        title = 'Viagem Concluída';
+        message = `Sua viagem para ${order.destination} foi concluída com sucesso!`;
         type = 'success';
         break;
       default:
-        title = 'Status Atualizado';
-        message = `O status do seu pedido para ${order.destination} foi atualizado para ${newStatus}.`;
+        title = 'Status da Viagem Atualizado';
+        message = `O status da sua viagem para ${order.destination} foi atualizado para ${statusTraduzido}.`;
         type = 'info';
     }
     

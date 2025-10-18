@@ -92,8 +92,8 @@ export const notificationService = {
       
       return {
         id: response.data.id,
-        title: 'Status do Pedido Atualizado',
-        message: `O pedido #${order.id} foi atualizado para ${newStatus}`,
+        title: 'Status da Viagem Atualizado',
+        message: `A viagem #${order.id} foi atualizada para ${newStatus}`,
         type: 'info',
         read: false,
         timestamp: new Date().toISOString(),
@@ -104,8 +104,8 @@ export const notificationService = {
       
       // Fallback para notificação local
       return this.addNotification({
-        title: 'Status do Pedido Atualizado',
-        message: `O pedido #${order.id} foi atualizado para ${newStatus}`,
+        title: 'Status da Viagem Atualizado',
+        message: `A viagem #${order.id} foi atualizada para ${newStatus}`,
         type: 'info',
         orderId: order.id,
         global: true
