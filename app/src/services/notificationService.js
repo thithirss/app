@@ -68,8 +68,7 @@ export const notificationService = {
       'pending': 'Pendente',
       'approved': 'Aprovado',
       'cancelled': 'Cancelado',
-      'in_progress': 'Em Andamento',
-      'completed': 'Concluído'
+      'in_progress': 'Em Andamento'
     };
     
     const statusTraduzido = statusTraducao[newStatus] || newStatus;
@@ -85,11 +84,7 @@ export const notificationService = {
         message = `Sua viagem para ${order.destination} foi cancelada.`;
         type = 'error';
         break;
-      case 'completed':
-        title = 'Viagem Concluída';
-        message = `Sua viagem para ${order.destination} foi concluída com sucesso!`;
-        type = 'success';
-        break;
+
       default:
         title = 'Status da Viagem Atualizado';
         message = `O status da sua viagem para ${order.destination} foi atualizado para ${statusTraduzido}.`;

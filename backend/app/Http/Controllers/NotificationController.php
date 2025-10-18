@@ -112,8 +112,7 @@ class NotificationController extends Controller
             'pending' => 'Pendente',
             'approved' => 'Aprovado',
             'cancelled' => 'Cancelado',
-            'in_progress' => 'Em Andamento',
-            'completed' => 'Concluído'
+            'in_progress' => 'Em Andamento'
         ];
         
         $statusTraduzido = $statusTraducao[$request->status] ?? $request->status;
