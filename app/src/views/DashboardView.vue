@@ -13,12 +13,12 @@
         <select v-model="statusFilter" @change="fetchOrders">
           <option value="">Todos os status</option>
           <option v-for="status in statusOptions" :key="status" :value="status">
-            {{ status }}
+            {{ translateStatus(status) }}
           </option>
         </select>
       </div>
       <router-link to="/orders/new" class="btn">
-        Novo Pedido
+        Cadastrar solicitação de viagem
       </router-link>
     </div>
 
@@ -56,18 +56,11 @@
           <td>{{ formatDate(order.return_date) }}</td>
           <td>{{ order.description || '—' }}</td>
           <td>
-            <select v-model="order.status" @change="onStatusChange(order)" :disabled="updatingId === order.id">
-              <option v-for="s in statusOptions" :key="s" :value="s">{{ s }}</option>
-            </select>
+            <span class="status-badge" :class="order.status">{{ translateStatus(order.status) }}</span>
           </td>
           <td>
-            <button class="btn" @click="onStatusChange(order)" :disabled="updatingId === order.id">
-              <LoadingSpinner :visible="updatingId === order.id" />
-              <span v-if="updatingId !== order.id">Salvar</span>
-            </button>
-            
-            <router-link :to="`/orders/${order.id}`" class="btn">
-              Ver
+            <router-link :to="`/orders/${order.id}`" class="btn view-btn">
+              <i class="fas fa-eye"></i> Ver
             </router-link>
           </td>
         </tr>
@@ -80,7 +73,6 @@
 import { api } from '@/services/api'
 import BaseToast from '@/components/BaseToast.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import { eventBus } from '@/services/eventBus'
 
 export default {
   name: 'DashboardView',
@@ -138,25 +130,16 @@ export default {
       // Método para lidar com a pesquisa em tempo real
       // Não precisa fazer nada aqui, pois estamos usando computed property
     },
-    async onStatusChange(order) {
-      if (this.updatingId) return
-      
-      this.updatingId = order.id
-      this.message = ''
-      try {
-        await api.updateOrderStatus(order.id, order.status)
-        
-        // Emitir evento para criar notificação sobre mudança de status
-        eventBus.emit('notification:order-status', order, order.status)
-        
-        this.message = 'Status atualizado com sucesso.'
-        this.messageType = 'success'
-      } catch (e) {
-        this.message = e.message || 'Erro ao atualizar status.'
-        this.messageType = 'error'
-      } finally {
-        this.updatingId = null
+    translateStatus(status) {
+      const translations = {
+        'pending': 'Pendente',
+        'approved': 'Aprovado',
+        'cancelled': 'Cancelado',
+        'in_progress': 'Em Andamento',
+        'completed': 'Concluído'
       }
+      
+      return translations[status] || status
     },
     formatDate(dateString) {
       if (!dateString) return '—'
@@ -176,13 +159,29 @@ export default {
 .dashboard { max-width: 1200px; margin: 20px auto; text-align: left; }
 .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .search-filters { display: flex; gap: 15px; align-items: center; }
-.btn { background: #42b983; color: #fff; padding: 8px 12px; border-radius: 6px; text-decoration: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
-.table { width: 100%; border-collapse: collapse; }
-.table th, .table td { border: 1px solid #eee; padding: 8px; text-align: center; }
-.table th { background-color: #f5f5f5; }
+.btn { background: #64d0ff; color: #fff; padding: 8px 12px; border-radius: 6px; text-decoration: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.3s ease; }
+.btn:hover { background: #4db8e5; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.view-btn { background: #64d0ff; }
+.table { width: 100%; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
+.table th, .table td { border: 1px solid #eee; padding: 10px; text-align: center; }
+.table th { background-color: #64d0ff; color: white; font-weight: 500; }
 .table tr:nth-child(even) { background-color: #f9f9f9; }
-.table tr:hover { background-color: #f0f0f0; }
+.table tr:hover { background-color: #f0f8ff; }
 .center { display: flex; justify-content: center; padding: 20px; }
-.order-link { color: #42b983; text-decoration: none; font-weight: bold; }
+.order-link { color: #64d0ff; text-decoration: none; font-weight: bold; }
 .order-link:hover { text-decoration: underline; }
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 500;
+  color: white;
+  background-color: #ccc;
+}
+.status-badge.pending { background-color: #f0ad4e; }
+.status-badge.approved { background-color: #5cb85c; }
+.status-badge.cancelled { background-color: #d9534f; }
+.status-badge.in_progress { background-color: #64d0ff; }
+.status-badge.completed { background-color: #5bc0de; }
 </style>

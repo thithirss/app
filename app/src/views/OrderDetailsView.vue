@@ -1,14 +1,14 @@
 <template>
   <div class="order-details">
     <div class="header">
-      <h1>Detalhes do Pedido #{{ orderId }}</h1>
+      <h1>Detalhes da Viagem #{{ orderId }}</h1>
       <router-link to="/dashboard" class="btn back-btn">
-        Voltar
+        <i class="fas fa-arrow-left"></i> Voltar
       </router-link>
     </div>
 
     <div v-if="loading" class="center">
-      <p>Carregando detalhes do pedido...</p>
+      <p>Carregando detalhes da viagem...</p>
     </div>
 
     <div v-else-if="error" class="error-message">
@@ -18,27 +18,49 @@
 
     <div v-else-if="order" class="order-card">
       <div class="order-header">
-        <h2>Pedido #{{ order.id }}</h2>
-        <div class="status-badge" :class="order.status">{{ order.status }}</div>
+        <h2>Viagem #{{ order.id }}</h2>
+        <div class="status-badge" :class="order.status">{{ translateStatus(order.status) }}</div>
       </div>
 
       <div class="order-info">
-
-
         <div class="info-group">
-          <h3>Informações da Viagem</h3>
-          <p><strong>Nome do solicitante:</strong> {{ order.requester_name }}</p>
-          <p><strong>Destino:</strong> {{ order.destination }}</p>
-          <p><strong>Data de Ida:</strong> {{ formatDate(order.departure_date) }}</p>
-          <p><strong>Data de Volta:</strong> {{ formatDate(order.return_date) }}</p>
-          <p><strong>Descrição:</strong> {{ order.description || 'Sem descrição' }}</p>
+          <h3><i class="fas fa-plane-departure"></i> Informações da Viagem</h3>
+          <div class="info-item">
+            <span class="info-label">Nome do solicitante:</span>
+            <span class="info-value">{{ order.requester_name }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Destino:</span>
+            <span class="info-value">{{ order.destination }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Data de Ida:</span>
+            <span class="info-value">{{ formatDate(order.departure_date) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Data de Volta:</span>
+            <span class="info-value">{{ formatDate(order.return_date) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Descrição:</span>
+            <span class="info-value">{{ order.description || 'Sem descrição' }}</span>
+          </div>
         </div>
 
         <div class="info-group">
-          <h3>Status do Pedido</h3>
-          <p><strong>Status Atual:</strong> {{ order.status }}</p>
-          <p><strong>Criado em:</strong> {{ formatDate(order.created_at) }}</p>
-          <p><strong>Atualizado em:</strong> {{ formatDate(order.updated_at) }}</p>
+          <h3><i class="fas fa-info-circle"></i> Status da Viagem</h3>
+          <div class="info-item">
+            <span class="info-label">Status Atual:</span>
+            <span class="info-value status-text" :class="order.status">{{ translateStatus(order.status) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Criado em:</span>
+            <span class="info-value">{{ formatDate(order.created_at) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Atualizado em:</span>
+            <span class="info-value">{{ formatDate(order.updated_at) }}</span>
+          </div>
         </div>
       </div>
 
@@ -46,14 +68,14 @@
         <select v-model="newStatus" :disabled="updatingStatus">
           <option value="">Selecione um novo status</option>
           <option v-for="status in availableStatusOptions" :key="status" :value="status">
-            {{ status }}
+            {{ translateStatus(status) }}
           </option>
         </select>
-        <button @click="updateStatus" class="btn" :disabled="!newStatus || updatingStatus">
-          Atualizar Status
+        <button @click="updateStatus" class="btn update-btn" :disabled="!newStatus || updatingStatus">
+          <i class="fas fa-save"></i> Atualizar Status
         </button>
         <router-link v-if="order.status === 'pending'" :to="`/orders/${orderId}/edit`" class="btn edit-btn">
-          Editar Pedido
+          <i class="fas fa-edit"></i> Editar Viagem
         </router-link>
       </div>
     </div>
@@ -92,6 +114,16 @@ export default {
     this.fetchOrderDetails()
   },
   methods: {
+    translateStatus(status) {
+      const translations = {
+        'pending': 'Pendente',
+        'approved': 'Aprovado',
+        'cancelled': 'Cancelado',
+        'in_progress': 'Em Andamento',
+        'completed': 'Concluído'
+      };
+      return translations[status] || status;
+    },
     async fetchOrderDetails() {
       this.loading = true
       this.error = null
@@ -162,6 +194,12 @@ export default {
 
 .back-btn {
   background-color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #5a6268;
+  transform: translateX(-3px);
 }
 
 .center {
@@ -182,8 +220,9 @@ export default {
 .order-card {
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  transition: all 0.3s ease;
 }
 
 .order-header {
@@ -195,6 +234,107 @@ export default {
   margin-bottom: 20px;
 }
 
+.order-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .order-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info-group {
+  margin-bottom: 20px;
+}
+
+.info-group h3 {
+  color: #64d0ff;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 10px;
+  padding: 5px 0;
+}
+
+.info-label {
+  font-weight: bold;
+  min-width: 150px;
+  color: #555;
+}
+
+.info-value {
+  flex: 1;
+}
+
+.status-text {
+  font-weight: bold;
+}
+
+.actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actions select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  flex: 1;
+  min-width: 200px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #64d0ff;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #50b8e5;
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.edit-btn {
+  background-color: #64d0ff;
+}
+
+.edit-btn:hover {
+  background-color: #218838;
+}
+
+.update-btn {
+  background-color: #64d0ff;
+}
+
+.update-btn:hover {
+  background-color: #50b8e5;
+}
+
 .status-badge {
   padding: 6px 12px;
   border-radius: 20px;
@@ -204,28 +344,28 @@ export default {
 }
 
 .status-badge.pending {
-  background-color: #ffeeba;
-  color: #856404;
+  background-color: #f0ad4e;
+  color: white;
 }
 
 .status-badge.approved {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #5cb85c;
+  color: white;
 }
 
 .status-badge.cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #d9534f;
+  color: white;
 }
 
 .status-badge.in_progress {
-  background-color: #cce5ff;
-  color: #004085;
+  background-color: #64d0ff;
+  color: white;
 }
 
 .status-badge.completed {
-  background-color: #d1ecf1;
-  color: #0c5460;
+  background-color: #5bc0de;
+  color: white;
 }
 
 .order-info {
@@ -241,7 +381,7 @@ export default {
 .info-group h3 {
   margin-bottom: 10px;
   font-size: 1.2rem;
-  color: #42b983;
+  color: #64d0ff;
 }
 
 .actions {
@@ -253,7 +393,7 @@ export default {
 }
 
 .btn {
-  background: #42b983;
+  background: #64d0ff;
   color: #fff;
   padding: 8px 12px;
   border-radius: 6px;
@@ -304,7 +444,11 @@ select {
 }
 
 .edit-btn {
-  background-color: #007bff;
+  background-color: #64d0ff;
+}
+
+.edit-btn:hover {
+  background-color: #50b8e5;
 }
 
 .cancel-btn {

@@ -1,7 +1,7 @@
 <template>
   <div class="edit-order-container">
     <div class="edit-order-card">
-      <h1>Editar Pedido</h1>
+      <h1>Editar Viagem</h1>
       
       <div v-if="error" class="error-message">
         {{ error }}
@@ -147,7 +147,7 @@ export default {
           
           // Verificar se o pedido está com status pendente
           if (order.status !== 'pending') {
-            this.error = 'Apenas pedidos com status pendente podem ser editados';
+            this.error = 'Apenas viagens com status pendente podem ser editadas';
             setTimeout(() => {
               this.$router.push(`/orders/${this.orderId}`);
             }, 2000);
@@ -197,8 +197,8 @@ export default {
         await api.api.updateOrder(this.orderId, this.editForm);
         this.$router.push(`/orders/${this.orderId}`);
       } catch (error) {
-        this.error = 'Erro ao atualizar o pedido';
-        console.error('Erro ao atualizar o pedido:', error);
+        this.error = 'Erro ao atualizar a viagem';
+        console.error('Erro ao atualizar a viagem:', error);
       } finally {
         this.updating = false;
       }
@@ -310,12 +310,12 @@ textarea {
 }
 
 .btn-primary {
-  background-color: #4CAF50;
+  background-color: #64d0ff;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #45a049;
+  background-color: #50b8e5;
 }
 
 .btn-primary:disabled {

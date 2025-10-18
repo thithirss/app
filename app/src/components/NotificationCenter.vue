@@ -3,7 +3,7 @@
     <!-- Ícone de notificação com contador -->
     <div class="notification-icon" @click="toggleNotificationPanel">
       <i class="fas fa-bell"></i>
-      <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+      <span v-if="unreadCount > 0" class="notification-badge pulse">{{ unreadCount }}</span>
     </div>
     
     <!-- Painel de notificações -->
@@ -233,18 +233,32 @@ export default {
 
 .notification-badge {
   position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #dc3545;
+  top: -5px;
+  right: -5px;
+  background-color: var(--error-color);
   color: white;
   border-radius: 50%;
-  min-width: 18px;
+  width: 18px;
   height: 18px;
   font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px rgba(229, 57, 53, 0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .notification-panel {
