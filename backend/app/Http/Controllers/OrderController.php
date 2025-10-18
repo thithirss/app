@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * List orders with optional status filter. All users can see all orders.
+     * List orders with optional status filter. 
+     * Admin users can see all orders, regular users can only see their own orders.
      */
     public function index(Request $request)
     {
@@ -16,11 +17,16 @@ class OrderController extends Controller
         $status = $request->query('status');
 
         $query = Order::query();
+        
+        // Filtrar pedidos por usuário se não for admin
+        if (!(bool) $user->is_admin) {
+            $query->where('user_id', $user->id);
+        }
+        
         if ($status) {
             $query->where('status', $status);
         }
 
-        // Removida a restrição para que todos os usuários vejam todos os pedidos
         // Mantém a ordenação por data de criação (mais recentes primeiro)
         $orders = $query->orderByDesc('created_at')->get();
 

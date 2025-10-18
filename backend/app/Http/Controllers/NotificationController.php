@@ -16,13 +16,18 @@ class NotificationController extends Controller
     {
         $user = Auth::user();
         
-        // Buscar notificações do usuário e notificações globais
-        $notifications = Notification::where(function($query) use ($user) {
-            $query->where('user_id', $user->id)
-                  ->orWhere('global', true);
-        })
-        ->orderBy('created_at', 'desc')
-        ->get();
+        // Se for admin, buscar todas as notificações
+        // Se não for admin, buscar apenas notificações do usuário e globais
+        if ($user->is_admin) {
+            $notifications = Notification::orderBy('created_at', 'desc')->get();
+        } else {
+            $notifications = Notification::where(function($query) use ($user) {
+                $query->where('user_id', $user->id)
+                      ->orWhere('global', true);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+        }
         
         return response()->json($notifications);
     }
@@ -108,7 +113,7 @@ class NotificationController extends Controller
         $notification->user_id = $order->user_id;
         $notification->order_id = $order->id;
         $notification->type = 'info';
-        $notification->global = true; // Notificação visível para todos
+        $notification->global = false; // Notificação visível apenas para o usuário do pedido
         $notification->read = false;
         $notification->save();
         
