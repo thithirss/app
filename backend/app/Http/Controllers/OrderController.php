@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * List orders with optional status filter. Admins see all; users see their own.
+     * List orders with optional status filter. All users can see all orders.
      */
     public function index(Request $request)
     {
@@ -20,10 +20,8 @@ class OrderController extends Controller
             $query->where('status', $status);
         }
 
-        if (!(bool) $user->is_admin) {
-            $query->where('user_id', $user->id);
-        }
-
+        // Removida a restrição para que todos os usuários vejam todos os pedidos
+        // Mantém a ordenação por data de criação (mais recentes primeiro)
         $orders = $query->orderByDesc('created_at')->get();
 
         return response()->json($orders);
@@ -65,6 +63,18 @@ class OrderController extends Controller
         ]);
 
         return response()->json($order, 201);
+    }
+
+    /**
+     * Show a specific order by ID.
+     */
+    public function show(Request $request, int $id)
+    {
+        $user = $request->user();
+        $order = Order::findOrFail($id);
+
+        // Todos os usuários podem ver todos os pedidos
+        return response()->json($order);
     }
 
     /**

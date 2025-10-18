@@ -72,6 +72,10 @@ export const api = {
     return request(`/orders${qs}`, { auth: true });
   },
 
+  getOrderById(id) {
+    return request(`/orders/${id}`, { auth: true });
+  },
+
   createOrder(payload) {
     const form = new URLSearchParams(payload);
     return request('/orders', {

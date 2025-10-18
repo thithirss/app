@@ -27,6 +27,12 @@ const routes = [
     component: CreateOrderView,
     meta: { requiresAuth: true }
   },
+  {
+    path: '/orders/:id',
+    name: 'order-details',
+    component: () => import('../views/OrderDetailsView.vue'),
+    meta: { requiresAuth: true }
+  },
   // {
   //   path: '/about',
   //   name: 'about',
