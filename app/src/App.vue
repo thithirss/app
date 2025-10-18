@@ -3,8 +3,8 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/dashboard">Dashboard</router-link> |
     <router-link to="/orders/new">Novo Pedido</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/servicos">Serviços</router-link>
+    <!-- <router-link to="/about">About</router-link> |
+    <router-link to="/servicos">Serviços</router-link> -->
     <span style="float:right">
       <router-link v-if="!isAuthenticated" to="/login">Login</router-link>
       <button v-else class="logout" @click="logout">Sair</button>

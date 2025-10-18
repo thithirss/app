@@ -7,7 +7,7 @@
     <form @submit.prevent="onSubmit" class="form">
       <label>
         ID do Pedido
-        <input v-model="orderId" type="text" readonly class="readonly-field" />
+        <input v-model="orderId" type="text" readonly class="readonly-field" :placeholder="orderIdPlaceholder" />
       </label>
       <label>
         Nome do Solicitante
@@ -49,7 +49,8 @@ export default {
   components: { BaseToast, LoadingSpinner },
   data() {
     return {
-      orderId: 'ORD-' + Date.now().toString().slice(-6),
+      orderId: '',
+      orderIdPlaceholder: 'Será gerado automaticamente',
       requesterName: '',
       destination: '',
       departureDate: '',
@@ -66,7 +67,6 @@ export default {
       this.message = ''
       try {
         const payload = { 
-          id: this.orderId,
           requesterName: this.requesterName,
           destination: this.destination,
           departureDate: this.departureDate,
@@ -75,7 +75,8 @@ export default {
           status: 'solicitado' // Status inicial
         }
         
-        await api.createOrder(payload)
+        const response = await api.createOrder(payload)
+        this.orderId = response.id
         this.message = 'Pedido de viagem criado com sucesso.'
         this.messageType = 'success'
         this.$router.push('/dashboard')

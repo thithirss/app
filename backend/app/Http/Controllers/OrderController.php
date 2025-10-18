@@ -43,7 +43,6 @@ class OrderController extends Controller
         }
 
         $validator = \Validator::make($payload, [
-            'id' => ['nullable', 'string', 'max:255'],
             'requesterName' => ['required', 'string', 'max:255'],
             'destination' => ['required', 'string', 'max:255'],
             'departureDate' => ['required', 'date'],
@@ -63,7 +62,6 @@ class OrderController extends Controller
             'return_date' => $data['returnDate'],
             'description' => $data['description'] ?? null,
             'status' => $data['status'] ?? 'solicitado',
-            'order_id' => $data['id'] ?? ('ORD-' . time()),
         ]);
 
         return response()->json($order, 201);

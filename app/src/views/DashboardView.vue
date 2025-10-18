@@ -23,7 +23,12 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Título/Destino</th>
+          <!-- <th>Código</th> -->
+          <th>Solicitante</th>
+          <th>Destino</th>
+          <th>Data Partida</th>
+          <th>Data Retorno</th>
+          <th>Descrição</th>
           <th>Status</th>
           <th>Ações</th>
         </tr>
@@ -31,7 +36,12 @@
       <tbody>
         <tr v-for="order in orders" :key="order.id">
           <td>{{ order.id }}</td>
-          <td>{{ order.destination || order.title || '—' }}</td>
+          <!-- <td>{{ order.order_id || '—' }}</td> -->
+          <td>{{ order.requester_name || '—' }}</td>
+          <td>{{ order.destination || '—' }}</td>
+          <td>{{ formatDate(order.departure_date) }}</td>
+          <td>{{ formatDate(order.return_date) }}</td>
+          <td>{{ order.description || '—' }}</td>
           <td>
             <select v-model="order.status" @change="onStatusChange(order)" :disabled="updatingId === order.id">
               <option v-for="s in statusOptions" :key="s" :value="s">{{ s }}</option>
@@ -106,16 +116,29 @@ export default {
       } finally {
         this.updatingId = null
       }
+    },
+    formatDate(dateString) {
+      if (!dateString) return '—'
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) return dateString
+      return new Intl.DateTimeFormat('pt-BR', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric' 
+      }).format(date)
     }
   }
 }
 </script>
 
 <style scoped>
-.dashboard { max-width: 900px; margin: 20px auto; text-align: left; }
+.dashboard { max-width: 1200px; margin: 20px auto; text-align: left; }
 .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .btn { background: #42b983; color: #fff; padding: 8px 12px; border-radius: 6px; text-decoration: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 .table { width: 100%; border-collapse: collapse; }
-.table th, .table td { border: 1px solid #eee; padding: 8px; }
+.table th, .table td { border: 1px solid #eee; padding: 8px; text-align: center; }
+.table th { background-color: #f5f5f5; }
+.table tr:nth-child(even) { background-color: #f9f9f9; }
+.table tr:hover { background-color: #f0f0f0; }
 .center { display: flex; justify-content: center; padding: 20px; }
 </style>
