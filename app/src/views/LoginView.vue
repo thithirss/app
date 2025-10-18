@@ -1,8 +1,8 @@
 <template>
   <div class="login-container">
-    <div class="login-card">
+      <div class="login-card">
       <div class="login-header">
-        <h2>Bem-vindo ao Sistema de Viagens</h2>
+        <h2>Bem-vindo a Travel</h2>
         <p>Faça login para continuar</p>
       </div>
 

@@ -2,10 +2,20 @@
   <nav v-if="showNavbar">
     <div class="nav-container">
       <div class="nav-left">
-        <router-link to="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</router-link>
-        <router-link to="/orders/new"><i class="fas fa-plus-circle"></i> Cadastrar solicitação de viagem</router-link>
+        <div class="brand-section">
+          <img src="@/assets/travel-logo.svg" alt="Travel Logo" class="logo" />
+          <span class="brand-name">Travel</span>
+        </div>
+        <div class="nav-links">
+          <router-link to="/dashboard"><i class="fas fa-suitcase-rolling"></i> Painel de viagens</router-link>
+          <router-link to="/orders/new"><i class="fas fa-plus-circle"></i> Cadastrar solicitação de viagem</router-link>
+        </div>
       </div>
       <div class="nav-right">
+        <div v-if="isAuthenticated && userData" class="user-info">
+          <i class="fas fa-user-circle"></i>
+          <span class="user-name">{{ userData.name }}</span>
+        </div>
         <notification-center v-if="isAuthenticated" />
         <router-link v-if="!isAuthenticated" to="/login"><i class="fas fa-sign-in-alt"></i> Login</router-link>
         <button v-else class="logout" @click="logout"><i class="fas fa-sign-out-alt"></i> Sair</button>
@@ -34,6 +44,10 @@ export default {
     },
     showNavbar() {
       return this.$route.path !== '/login'
+    },
+    userData() {
+      const userData = localStorage.getItem('user_data')
+      return userData ? JSON.parse(userData) : null
     }
   },
   methods: {
@@ -79,6 +93,59 @@ nav {
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: 30px;
+  padding-right: 30px;
+  border-right: 2px solid #e2e8f0;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.user-info i {
+  font-size: 1.2rem;
+  color: #64d0ff;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.95rem;
 }
 
 nav a {
@@ -221,21 +288,49 @@ label {
 
 /* Responsividade */
 @media (max-width: 768px) {
-  nav {
+  .nav-container {
     flex-direction: column;
-    padding: 15px;
+    height: auto;
+    padding: 15px 20px;
+    gap: 15px;
+  }
+  
+  .nav-left {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+  }
+  
+  .brand-section {
+    margin-right: 0;
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 15px;
+    justify-content: center;
+  }
+  
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+  
+  .nav-right {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .user-info {
+    order: -1;
+    margin-bottom: 10px;
   }
   
   nav a {
-    margin: 5px 0;
-  }
-  
-  nav span {
-    margin-top: 10px;
-    margin-left: 0;
     width: 100%;
-    display: flex;
     justify-content: center;
+    margin: 5px 0;
   }
 }
 </style>

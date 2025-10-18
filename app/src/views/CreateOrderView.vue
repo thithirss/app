@@ -28,7 +28,7 @@
         />
       </label>
       <div class="form-row">
-        <label class="half-width">
+        <label class="half-width ">
           Data de Ida
           <input v-model="departureDate" type="date" required />
         </label>
@@ -134,7 +134,7 @@ input, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
 button { padding: 10px; border: none; border-radius: 6px; background: #64d0ff; color: white; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
 button:disabled { opacity: 0.7; cursor: not-allowed; }
 .form-row { display: flex; gap: 12px; }
-.half-width { flex: 1; }
+.half-width { flex: 1;}
 .readonly-field { background-color: #f5f5f5; color: #666; cursor: not-allowed; }
 </style>
 
