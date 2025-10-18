@@ -7,12 +7,16 @@ export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-export function setToken(token) {
+export function setToken(token, userData) {
   localStorage.setItem(TOKEN_KEY, token);
+  if (userData) {
+    localStorage.setItem('user_data', JSON.stringify(userData));
+  }
 }
 
 export function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem('user_data');
 }
 
 async function request(path, options = {}) {

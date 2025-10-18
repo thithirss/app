@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     isAuthenticated() {
-      return !!localStorage.getItem('auth_token')
+      return !!localStorage.getItem('auth_token') && !!localStorage.getItem('user_data')
     },
     showNavbar() {
       return this.$route.path !== '/login'

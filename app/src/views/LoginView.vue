@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { api, setToken } from '@/services/api'
+import { api } from '@/services/api'
 import BaseToast from '@/components/BaseToast.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
@@ -70,7 +70,11 @@ export default {
         const res = await api.login(this.email, this.password)
         const token = res?.token || res?.access_token || res?.jwt
         if (!token) throw new Error('Token não retornado pela API')
-        setToken(token)
+        
+        // Salvar token e dados do usuário separadamente
+        localStorage.setItem('auth_token', token)
+        localStorage.setItem('user_data', JSON.stringify(res.user))
+        
         this.message = 'Login realizado com sucesso.'
         this.messageType = 'success'
         const redirect = this.$route.query.redirect || '/dashboard'

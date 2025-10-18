@@ -84,11 +84,17 @@ class OrderController extends Controller
     }
 
     /**
-     * Update the status of an order. Admins can update any; users can update their own.
+     * Update the status of an order. Only admins can update status.
      */
     public function updateStatus(Request $request, int $id)
     {
         $user = $request->user();
+        
+        // Verificar se o usuário é admin
+        if (!(bool) $user->is_admin) {
+            return response()->json(['message' => 'Apenas administradores podem alterar o status'], 403);
+        }
+        
         $payload = $request->all();
         if (empty($payload)) {
             $payload = $request->json()->all();
@@ -100,10 +106,6 @@ class OrderController extends Controller
         $data = $validator->validated();
 
         $order = Order::findOrFail($id);
-
-        if (!(bool) $user->is_admin && $order->user_id !== $user->id) {
-            return response()->json(['message' => 'Não autorizado'], 403);
-        }
 
         // Verificar se está tentando cancelar um pedido já aprovado
         if ($data['status'] === 'cancelled' && $order->status === 'approved') {

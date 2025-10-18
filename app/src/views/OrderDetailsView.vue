@@ -65,13 +65,13 @@
       </div>
 
       <div class="actions">
-        <select v-model="newStatus" :disabled="updatingStatus">
+        <select v-if="isAdmin" v-model="newStatus" :disabled="updatingStatus">
           <option value="">Selecione um novo status</option>
           <option v-for="status in availableStatusOptions" :key="status" :value="status">
             {{ translateStatus(status) }}
           </option>
         </select>
-        <button @click="updateStatus" class="btn update-btn" :disabled="!newStatus || updatingStatus">
+        <button v-if="isAdmin" @click="updateStatus" class="btn update-btn" :disabled="!newStatus || updatingStatus">
           <i class="fas fa-save"></i> Atualizar Status
         </button>
         <router-link v-if="order.status === 'pending'" :to="`/orders/${orderId}/edit`" class="btn edit-btn">
@@ -102,6 +102,20 @@ export default {
     }
   },
   computed: {
+    isAdmin() {
+      // Verificar se o usuário é admin através do localStorage
+      const userData = localStorage.getItem('user_data');
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          return user.is_admin === true;
+        } catch (e) {
+          console.error('Erro ao analisar dados do usuário:', e);
+          return false;
+        }
+      }
+      return false;
+    },
     availableStatusOptions() {
       // Remover a opção 'cancelled' se o pedido já estiver aprovado
       if (this.order && this.order.status === 'approved') {
