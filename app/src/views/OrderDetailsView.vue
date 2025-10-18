@@ -45,7 +45,7 @@
       <div class="actions">
         <select v-model="newStatus" :disabled="updatingStatus">
           <option value="">Selecione um novo status</option>
-          <option v-for="status in statusOptions" :key="status" :value="status">
+          <option v-for="status in availableStatusOptions" :key="status" :value="status">
             {{ status }}
           </option>
         </select>
@@ -79,6 +79,15 @@ export default {
       statusOptions: ['pending', 'approved', 'cancelled', 'in_progress', 'completed']
     }
   },
+  computed: {
+    availableStatusOptions() {
+      // Remover a opção 'cancelled' se o pedido já estiver aprovado
+      if (this.order && this.order.status === 'approved') {
+        return this.statusOptions.filter(status => status !== 'cancelled');
+      }
+      return this.statusOptions;
+    }
+  },
   created() {
     this.fetchOrderDetails()
   },
@@ -104,6 +113,7 @@ export default {
       if (!this.newStatus || this.updatingStatus) return
       
       this.updatingStatus = true
+      this.error = null
       
       try {
         await api.api.updateOrderStatus(this.orderId, this.newStatus)
@@ -116,7 +126,12 @@ export default {
         
         this.newStatus = ''
       } catch (err) {
-        this.error = err.message || 'Erro ao atualizar status do pedido'
+        // Exibir mensagem de erro específica se for tentativa de cancelar pedido aprovado
+        if (err.response && err.response.status === 422) {
+          this.error = 'Não é possível cancelar um pedido que já foi aprovado';
+        } else {
+          this.error = err.message || 'Erro ao atualizar status do pedido';
+        }
       } finally {
         this.updatingStatus = false
       }

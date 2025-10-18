@@ -99,6 +99,11 @@ class OrderController extends Controller
             return response()->json(['message' => 'Não autorizado'], 403);
         }
 
+        // Verificar se está tentando cancelar um pedido já aprovado
+        if ($data['status'] === 'cancelled' && $order->status === 'approved') {
+            return response()->json(['message' => 'Não é possível cancelar um pedido que já foi aprovado'], 422);
+        }
+
         $order->status = $data['status'];
         $order->save();
 
