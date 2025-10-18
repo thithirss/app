@@ -6,6 +6,7 @@
     <!-- <router-link to="/about">About</router-link> |
     <router-link to="/servicos">Serviços</router-link> -->
     <span style="float:right">
+      <notification-center v-if="isAuthenticated" />
       <router-link v-if="!isAuthenticated" to="/login">Login</router-link>
       <button v-else class="logout" @click="logout">Sair</button>
     </span>
@@ -15,8 +16,13 @@
 
 <script>
 import { clearToken } from '@/services/api'
+import NotificationCenter from '@/components/NotificationCenter.vue'
+
 export default {
   name: 'App',
+  components: {
+    NotificationCenter
+  },
   computed: {
     isAuthenticated() {
       return !!localStorage.getItem('auth_token')

@@ -80,6 +80,7 @@
 import { api } from '@/services/api'
 import BaseToast from '@/components/BaseToast.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { eventBus } from '@/services/eventBus'
 
 export default {
   name: 'DashboardView',
@@ -93,7 +94,7 @@ export default {
       searchQuery: '',
       message: '',
       messageType: 'info',
-      defaultStatuses: ['pending','approved','cancelled','in_progress']
+      defaultStatuses: ['pending','approved','cancelled','in_progress','completed']
     }
   },
   computed: {
@@ -138,11 +139,16 @@ export default {
       // Não precisa fazer nada aqui, pois estamos usando computed property
     },
     async onStatusChange(order) {
-      if (!order?.id || !order?.status) return
+      if (this.updatingId) return
+      
       this.updatingId = order.id
       this.message = ''
       try {
         await api.updateOrderStatus(order.id, order.status)
+        
+        // Emitir evento para criar notificação sobre mudança de status
+        eventBus.emit('notification:order-status', order, order.status)
+        
         this.message = 'Status atualizado com sucesso.'
         this.messageType = 'success'
       } catch (e) {

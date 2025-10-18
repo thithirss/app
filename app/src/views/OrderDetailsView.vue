@@ -64,6 +64,7 @@
 
 <script>
 import * as api from '@/services/api'
+import { eventBus } from '@/services/eventBus'
 
 export default {
   name: 'OrderDetailsView',
@@ -106,7 +107,13 @@ export default {
       
       try {
         await api.api.updateOrderStatus(this.orderId, this.newStatus)
+        
+        // Atualizar o status do pedido
         this.order.status = this.newStatus
+        
+        // Criar notificação para o usuário sobre a mudança de status
+        eventBus.emit('notification:order-status', this.order, this.newStatus)
+        
         this.newStatus = ''
       } catch (err) {
         this.error = err.message || 'Erro ao atualizar status do pedido'
