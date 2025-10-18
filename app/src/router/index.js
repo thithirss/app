@@ -33,6 +33,12 @@ const routes = [
     component: () => import('../views/OrderDetailsView.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/orders/:id/edit',
+    name: 'edit-order',
+    component: () => import('../views/EditOrderView.vue'),
+    meta: { requiresAuth: true }
+  },
   // {
   //   path: '/about',
   //   name: 'about',

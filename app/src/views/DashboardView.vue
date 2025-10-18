@@ -65,8 +65,8 @@
               <LoadingSpinner :visible="updatingId === order.id" />
               <span v-if="updatingId !== order.id">Salvar</span>
             </button>
+            
             <router-link :to="`/orders/${order.id}`" class="btn">
-              <span class="material-icons">visibility</span>
               Ver
             </router-link>
           </td>

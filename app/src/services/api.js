@@ -95,4 +95,14 @@ export const api = {
       auth: true,
     });
   },
+
+  updateOrder(id, payload) {
+    const form = new URLSearchParams(payload);
+    return request(`/orders/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form,
+      auth: true,
+    });
+  },
 };

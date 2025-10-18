@@ -104,4 +104,44 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Status atualizado', 'order' => $order]);
     }
+
+    /**
+     * Update an order. Only allowed if status is pending.
+     */
+    public function update(Request $request, int $id)
+    {
+        $user = $request->user();
+        $order = Order::findOrFail($id);
+
+        // Verificar se o pedido está com status pendente
+        if ($order->status !== 'pending') {
+            return response()->json(['message' => 'Apenas pedidos com status pendente podem ser editados'], 403);
+        }
+
+        // Support both form-urlencoded and JSON bodies reliably
+        $payload = $request->all();
+        if (empty($payload)) {
+            $payload = $request->json()->all();
+        }
+
+        $validator = \Validator::make($payload, [
+            'requester_name' => ['required', 'string', 'max:255'],
+            'destination' => ['required', 'string', 'max:255'],
+            'departure_date' => ['required', 'date'],
+            'return_date' => ['required', 'date'],
+            'description' => ['nullable', 'string'],
+        ]);
+        $validator->validate();
+        $data = $validator->validated();
+
+        $order->update([
+            'requester_name' => $data['requester_name'],
+            'destination' => $data['destination'],
+            'departure_date' => $data['departure_date'],
+            'return_date' => $data['return_date'],
+            'description' => $data['description'] ?? $order->description,
+        ]);
+
+        return response()->json(['message' => 'Pedido atualizado com sucesso', 'order' => $order]);
+    }
 }

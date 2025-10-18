@@ -23,15 +23,11 @@
       </div>
 
       <div class="order-info">
-        <div class="info-group">
-          <h3>Informações do Solicitante</h3>
-          <p><strong>Nome:</strong> {{ order.requester_name }}</p>
-          <p><strong>Email:</strong> {{ order.requester_email }}</p>
-          <p><strong>Telefone:</strong> {{ order.requester_phone || 'Não informado' }}</p>
-        </div>
+
 
         <div class="info-group">
           <h3>Informações da Viagem</h3>
+          <p><strong>Nome do solicitante:</strong> {{ order.requester_name }}</p>
           <p><strong>Destino:</strong> {{ order.destination }}</p>
           <p><strong>Data de Ida:</strong> {{ formatDate(order.departure_date) }}</p>
           <p><strong>Data de Volta:</strong> {{ formatDate(order.return_date) }}</p>
@@ -56,9 +52,14 @@
         <button @click="updateStatus" class="btn" :disabled="!newStatus || updatingStatus">
           Atualizar Status
         </button>
+        <router-link v-if="order.status === 'pending'" :to="`/orders/${orderId}/edit`" class="btn edit-btn">
+          Editar Pedido
+        </router-link>
       </div>
     </div>
+
   </div>
+  
 </template>
 
 <script>
@@ -249,7 +250,42 @@ export default {
 
 select {
   padding: 8px;
-  border-radius: 4px;
   border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-btn {
+  background-color: #4CAF50;
+}
+
+.edit-btn:hover {
+  background-color: #45a049;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  height: 100px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.edit-btn {
+  background-color: #007bff;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
 }
 </style>
