@@ -15,7 +15,17 @@
       </label>
       <label>
         Destino
-        <input v-model="destination" type="text" placeholder="Ex.: São Paulo" required />
+        <Multiselect
+          v-model="selectedLocalidade"
+          :options="localidades"
+          :searchable="true"
+          placeholder="Digite para buscar cidade e estado"
+          label="nome"
+          track-by="id"
+          @search-change="searchLocalidades"
+          :loading="loadingLocalidades"
+          required
+        />
       </label>
       <div class="form-row">
         <label class="half-width">
@@ -41,12 +51,14 @@
 
 <script>
 import { api } from '@/services/api'
+import { locationService } from '@/services/locationService'
 import BaseToast from '@/components/BaseToast.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'CreateOrderView',
-  components: { BaseToast, LoadingSpinner },
+  components: { BaseToast, LoadingSpinner, Multiselect },
   data() {
     return {
       orderId: '',
@@ -59,13 +71,35 @@ export default {
       loading: false,
       message: '',
       messageType: 'info',
+      // Campo para autocompletar localidade (cidade e estado juntos)
+      localidades: [],
+      selectedLocalidade: null,
+      loadingLocalidades: false
     }
   },
+  created() {
+    this.searchLocalidades('')
+  },
   methods: {
+    async searchLocalidades(query) {
+      this.loadingLocalidades = true
+      try {
+        this.localidades = await locationService.getLocalidades(query)
+      } catch (error) {
+        console.error('Erro ao buscar localidades:', error)
+      } finally {
+        this.loadingLocalidades = false
+      }
+    },
     async onSubmit() {
       this.loading = true
       this.message = ''
       try {
+        // Usa a localidade selecionada para o destino
+        if (this.selectedLocalidade) {
+          this.destination = this.selectedLocalidade.nome
+        }
+        
         const payload = { 
           requesterName: this.requesterName,
           destination: this.destination,
@@ -91,6 +125,7 @@ export default {
 }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 <style scoped>
 .create-order { max-width: 700px; margin: 20px auto; text-align: left; }
 .form { display: grid; gap: 12px; }
