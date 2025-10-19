@@ -30,6 +30,7 @@
 <script>
 import { clearToken } from '@/services/api'
 import NotificationCenter from '@/components/NotificationCenter.vue'
+import { eventBus } from '@/services/eventBus'
 import '@/assets/styles/variables.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 
@@ -38,21 +39,70 @@ export default {
   components: {
     NotificationCenter
   },
+  data() {
+    return {
+      authState: {
+        isAuthenticated: false,
+        userData: null
+      }
+    }
+  },
   computed: {
     isAuthenticated() {
-      return !!localStorage.getItem('auth_token') && !!localStorage.getItem('user_data')
+      return this.authState.isAuthenticated
     },
     showNavbar() {
       return this.$route.path !== '/login'
     },
     userData() {
-      const userData = localStorage.getItem('user_data')
-      return userData ? JSON.parse(userData) : null
+      return this.authState.userData
     }
   },
+  created() {
+    // Verificar estado inicial de autenticação
+    this.checkAuthState()
+    
+    // Escutar eventos de mudança de autenticação
+    eventBus.on('auth:login', this.handleLogin)
+    eventBus.on('auth:logout', this.handleLogout)
+  },
+  beforeUnmount() {
+    // Limpar listeners
+    eventBus.off('auth:login', this.handleLogin)
+    eventBus.off('auth:logout', this.handleLogout)
+  },
   methods: {
+    checkAuthState() {
+      const token = localStorage.getItem('auth_token')
+      const userDataStr = localStorage.getItem('user_data')
+      
+      if (token && userDataStr) {
+        try {
+          const userData = JSON.parse(userDataStr)
+          this.authState.isAuthenticated = true
+          this.authState.userData = userData
+        } catch (e) {
+          console.error('Erro ao parsear dados do usuário:', e)
+          this.clearAuthState()
+        }
+      } else {
+        this.clearAuthState()
+      }
+    },
+    handleLogin(userData) {
+      this.authState.isAuthenticated = true
+      this.authState.userData = userData
+    },
+    handleLogout() {
+      this.clearAuthState()
+    },
+    clearAuthState() {
+      this.authState.isAuthenticated = false
+      this.authState.userData = null
+    },
     logout() {
       clearToken()
+      eventBus.emit('auth:logout')
       this.$router.push('/login')
     }
   }

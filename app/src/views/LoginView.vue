@@ -48,6 +48,7 @@
 import { api } from '@/services/api'
 import BaseToast from '@/components/BaseToast.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { eventBus } from '@/services/eventBus'
 
 export default {
   name: 'LoginView',
@@ -74,6 +75,9 @@ export default {
         
         localStorage.setItem('auth_token', token)
         localStorage.setItem('user_data', JSON.stringify(res.user))
+        
+        // Emitir evento de login para atualizar o estado global
+        eventBus.emit('auth:login', res.user)
         
         this.message = 'Login realizado com sucesso.'
         this.messageType = 'success'
