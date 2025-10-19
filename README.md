@@ -31,7 +31,8 @@ Se ainda não tiver, você pode baixar aqui: [https://www.docker.com/](https://w
 
 2. **Crie o arquivo `.env`**
    Antes de iniciar os containers, é essencial ter o arquivo `.env` configurado.  
-   Copie o conteúdo abaixo e salve como `.env` na raiz do projeto:
+   Copie o conteúdo abaixo e salve como `.env` na raiz do **BACKEND**:
+   (cd backend -> crie o arquivo .env) 
    (Entendo que nao é uma boa pratica deixar o .env exposto, porem como esse repositorio nao dispoe de nenhum dado sensivel preocupante nao oferece riscos)
 
    ```env
