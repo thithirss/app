@@ -98,7 +98,7 @@ export default {
       error: null,
       newStatus: '',
       updatingStatus: false,
-      statusOptions: ['pending', 'approved', 'cancelled', 'in_progress', 'completed']
+      statusOptions: ['pending', 'approved', 'cancelled', 'in_progress', ]
     }
   },
   computed: {
