@@ -51,7 +51,7 @@ async function request(path, options = {}) {
       const data = await res.json();
       msg = data.message || msg;
     } catch (e) {
-      
+      // Ignora erro de parsing JSON - usa statusText como fallback
     }
     throw new Error(msg || `Erro de requisição (${res.status})`);
   }
