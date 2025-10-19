@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    /**
-     * List orders with optional status filter. 
-     * Admin users can see all orders, regular users can only see their own orders.
-     */
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -18,7 +16,7 @@ class OrderController extends Controller
 
         $query = Order::query();
         
-        // Filtrar pedidos por usuário se não for admin
+        
         if (!(bool) $user->is_admin) {
             $query->where('user_id', $user->id);
         }
@@ -27,26 +25,24 @@ class OrderController extends Controller
             $query->where('status', $status);
         }
 
-        // Mantém a ordenação por data de criação (mais recentes primeiro)
+        
         $orders = $query->orderByDesc('created_at')->get();
 
         return response()->json($orders);
     }
 
-    /**
-     * Create a new order assigned to the authenticated user.
-     */
+
     public function store(Request $request)
     {
         $user = $request->user();
 
-        // Support both form-urlencoded and JSON bodies reliably
+        
         $payload = $request->all();
         if (empty($payload)) {
             $payload = $request->json()->all();
         }
 
-        $validator = \Validator::make($payload, [
+        $validator = Validator::make($payload, [
             'requesterName' => ['required', 'string', 'max:255'],
             'destination' => ['required', 'string', 'max:255'],
             'departureDate' => ['required', 'date'],
@@ -71,26 +67,20 @@ class OrderController extends Controller
         return response()->json($order, 201);
     }
 
-    /**
-     * Show a specific order by ID.
-     */
     public function show(Request $request, int $id)
     {
         $user = $request->user();
         $order = Order::findOrFail($id);
 
-        // Todos os usuários podem ver todos os pedidos
+        
         return response()->json($order);
     }
 
-    /**
-     * Update the status of an order. Only admins can update status.
-     */
     public function updateStatus(Request $request, int $id)
     {
         $user = $request->user();
         
-        // Verificar se o usuário é admin
+        
         if (!(bool) $user->is_admin) {
             return response()->json(['message' => 'Apenas administradores podem alterar o status'], 403);
         }
@@ -99,7 +89,7 @@ class OrderController extends Controller
         if (empty($payload)) {
             $payload = $request->json()->all();
         }
-        $validator = \Validator::make($payload, [
+        $validator = Validator::make($payload, [
             'status' => ['required','string','in:pending,approved,cancelled,in_progress'],
         ]);
         $validator->validate();
@@ -107,7 +97,7 @@ class OrderController extends Controller
 
         $order = Order::findOrFail($id);
 
-        // Verificar se está tentando cancelar um pedido já aprovado
+        
         if ($data['status'] === 'cancelled' && $order->status === 'approved') {
             return response()->json(['message' => 'Não é possível cancelar um pedido que já foi aprovado'], 422);
         }
@@ -118,26 +108,24 @@ class OrderController extends Controller
         return response()->json(['message' => 'Status atualizado', 'order' => $order]);
     }
 
-    /**
-     * Update an order. Only allowed if status is pending.
-     */
+ 
     public function update(Request $request, int $id)
     {
         $user = $request->user();
         $order = Order::findOrFail($id);
 
-        // Verificar se o pedido está com status pendente
+        
         if ($order->status !== 'pending') {
             return response()->json(['message' => 'Apenas pedidos com status pendente podem ser editados'], 403);
         }
 
-        // Support both form-urlencoded and JSON bodies reliably
+        
         $payload = $request->all();
         if (empty($payload)) {
             $payload = $request->json()->all();
         }
 
-        $validator = \Validator::make($payload, [
+        $validator = Validator::make($payload, [
             'requester_name' => ['required', 'string', 'max:255'],
             'destination' => ['required', 'string', 'max:255'],
             'departure_date' => ['required', 'date'],
