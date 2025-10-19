@@ -23,25 +23,19 @@ class Notification extends Model
         'read_at' => 'datetime'
     ];
 
-    /**
-     * Relacionamento com o usuário
-     */
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Relacionamento com o pedido
-     */
+
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Marcar notificação como lida
-     */
+
     public function markAsRead()
     {
         $this->read = true;

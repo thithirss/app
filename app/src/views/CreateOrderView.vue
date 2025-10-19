@@ -71,7 +71,7 @@ export default {
       loading: false,
       message: '',
       messageType: 'info',
-      // Campo para autocompletar localidade (cidade e estado juntos)
+      
       localidades: [],
       selectedLocalidade: null,
       loadingLocalidades: false
@@ -95,7 +95,7 @@ export default {
       this.loading = true
       this.message = ''
       try {
-        // Usa a localidade selecionada para o destino
+        
         if (this.selectedLocalidade) {
           this.destination = this.selectedLocalidade.nome
         }
@@ -106,7 +106,7 @@ export default {
           departureDate: this.departureDate,
           returnDate: this.returnDate,
           description: this.description,
-          status: 'solicitado' // Status inicial
+          status: 'solicitado' 
         }
         
         const response = await api.createOrder(payload)
@@ -139,7 +139,7 @@ button:disabled { opacity: 0.7; cursor: not-allowed; }
 </style>
 
 <style>
-/* Estilos globais para o multiselect */
+
 .multiselect__option--highlight {
   background: #64d0ff !important;
   color: white !important;
@@ -150,7 +150,7 @@ button:disabled { opacity: 0.7; cursor: not-allowed; }
   color: white !important;
 }
 
-/* Removendo completamente o "Press enter to select" */
+
 .multiselect__option:after {
   display: none !important;
 }

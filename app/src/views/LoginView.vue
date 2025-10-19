@@ -71,7 +71,7 @@ export default {
         const token = res?.token || res?.access_token || res?.jwt
         if (!token) throw new Error('Token não retornado pela API')
         
-        // Salvar token e dados do usuário separadamente
+        
         localStorage.setItem('auth_token', token)
         localStorage.setItem('user_data', JSON.stringify(res.user))
         

@@ -1,12 +1,12 @@
 <template>
   <div class="notification-center">
-    <!-- Ícone de notificação com contador -->
+
     <div class="notification-icon" @click="toggleNotificationPanel">
       <i class="fas fa-bell"></i>
       <span v-if="unreadCount > 0" class="notification-badge pulse">{{ unreadCount }}</span>
     </div>
     
-    <!-- Painel de notificações -->
+
     <div v-if="showPanel" class="notification-panel">
       <div class="notification-panel-header">
         <h3>Notificações</h3>
@@ -31,7 +31,7 @@
       </div>
     </div>
     
-    <!-- Container para toasts -->
+
     <div class="toast-container">
       <notification-toast
         v-for="toast in toasts"
@@ -64,19 +64,19 @@ export default {
   created() {
     this.fetchNotificationsFromServer();
     
-    // Escutar eventos de notificação usando eventBus
+    
     eventBus.on('notification:new', this.handleNewNotification);
     eventBus.on('notification:order-status', this.handleOrderStatusChange);
     
-    // Configurar atualização periódica de notificações
+    
     this.startPolling();
   },
   beforeUnmount() {
-    // Remover event listeners
+    
     eventBus.off('notification:new', this.handleNewNotification);
     eventBus.off('notification:order-status', this.handleOrderStatusChange);
     
-    // Parar o polling quando o componente for desmontado
+    
     this.stopPolling();
   },
   methods: {
@@ -87,14 +87,14 @@ export default {
         this.updateUnreadCount();
       } catch (error) {
         console.error('Erro ao buscar notificações:', error);
-        // Fallback para notificações locais
+        
         this.notifications = notificationService.getNotifications();
         this.updateUnreadCount();
       }
     },
     
     startPolling() {
-      // Buscar notificações a cada 30 segundos
+      
       this.pollingInterval = setInterval(() => {
         this.fetchNotificationsFromServer();
       }, 30000);
@@ -113,7 +113,7 @@ export default {
     toggleNotificationPanel() {
       this.showPanel = !this.showPanel;
       
-      // Buscar notificações atualizadas do servidor quando o painel é aberto
+      
       if (this.showPanel) {
         this.fetchNotificationsFromServer();
       }
@@ -135,7 +135,7 @@ export default {
         this.fetchNotificationsFromServer();
       }
       
-      // Se a notificação estiver relacionada a uma viagem, navegar para a página de detalhes
+      
       if (notification.order_id) {
         this.$router.push({ name: 'OrderDetails', params: { id: notification.order_id } });
         this.showPanel = false;
@@ -146,24 +146,24 @@ export default {
       this.fetchNotificationsFromServer();
     },
     handleNewNotification(notification) {
-      // Adicionar notificação
+      
       notificationService.addNotification(notification)
         .then(newNotification => {
-          // Mostrar toast
+          
           this.showToast(newNotification);
           
-          // Atualizar lista de notificações
+          
           this.fetchNotificationsFromServer();
         });
     },
     handleOrderStatusChange(order, newStatus) {
-      // Adicionar notificação de mudança de status
+      
       notificationService.addOrderStatusNotification(order, newStatus)
         .then(notification => {
-          // Mostrar toast
+          
           this.showToast(notification);
           
-          // Atualizar lista de notificações
+          
           this.fetchNotificationsFromServer();
         });
     },
@@ -171,7 +171,7 @@ export default {
       const toast = { ...notification };
       this.toasts.push(toast);
       
-      // Remover toast após 5 segundos
+      
       setTimeout(() => {
         this.removeToast(toast.id);
       }, 5000);
@@ -183,7 +183,7 @@ export default {
       }
     },
     formatTime(timestamp) {
-      // Verificar se o timestamp é válido
+      
       if (!timestamp || isNaN(new Date(timestamp).getTime())) {
         return 'Agora';
       }

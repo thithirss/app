@@ -111,7 +111,7 @@ export default {
       },
       updating: false,
       error: null,
-      // Campos para o Multiselect de localidades
+      
       localidades: [],
       selectedLocalidade: null,
       loadingLocalidades: false,
@@ -121,7 +121,7 @@ export default {
   created() {
     this.orderId = this.$route.params.id;
     this.fetchOrderDetails();
-    // Carrega as localidades populares inicialmente
+    
     this.searchLocalidades('');
   },
   methods: {
@@ -140,12 +140,12 @@ export default {
             description: order.description || ''
           };
           
-          // Buscar a localidade correspondente ao destino atual
+          
           if (order.destination) {
             this.searchLocalidades(order.destination);
           }
           
-          // Verificar se o pedido está com status pendente
+          
           if (order.status !== 'pending') {
             this.error = 'Apenas viagens com status pendente podem ser editadas';
             setTimeout(() => {
@@ -163,7 +163,7 @@ export default {
       try {
         this.localidades = await locationService.getLocalidades(query);
         
-        // Se estamos carregando os detalhes iniciais, tenta encontrar a localidade correspondente
+        
         if (this.originalDestination && query === this.originalDestination) {
           const localidadeEncontrada = this.localidades.find(
             loc => loc.nome === this.originalDestination

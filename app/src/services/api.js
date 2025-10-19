@@ -1,5 +1,5 @@
-// Use o proxy de desenvolvimento configurado em vue.config.js
-// Força uso de "/api" para evitar envs incorretos (ex.: localhost:3000)
+
+
 const API_BASE_URL = '/api';
 const TOKEN_KEY = 'auth_token';
 
@@ -51,7 +51,7 @@ async function request(path, options = {}) {
       const data = await res.json();
       msg = data.message || msg;
     } catch (e) {
-      // ignore JSON parse errors, keep statusText
+      
     }
     throw new Error(msg || `Erro de requisição (${res.status})`);
   }

@@ -103,7 +103,7 @@ export default {
   },
   computed: {
     isAdmin() {
-      // Verificar se o usuário é admin através do localStorage
+      
       const userData = localStorage.getItem('user_data');
       if (userData) {
         try {
@@ -117,7 +117,7 @@ export default {
       return false;
     },
     availableStatusOptions() {
-      // Remover a opção 'cancelled' se o pedido já estiver aprovado
+      
       if (this.order && this.order.status === 'approved') {
         return this.statusOptions.filter(status => status !== 'cancelled');
       }
@@ -164,15 +164,15 @@ export default {
       try {
         await api.api.updateOrderStatus(this.orderId, this.newStatus)
         
-        // Atualizar o status do pedido
+        
         this.order.status = this.newStatus
         
-        // Criar notificação para o usuário sobre a mudança de status
+        
         eventBus.emit('notification:order-status', this.order, this.newStatus)
         
         this.newStatus = ''
       } catch (err) {
-        // Exibir mensagem de erro específica se for tentativa de cancelar pedido aprovado
+        
         if (err.response && err.response.status === 422) {
           this.error = 'Não é possível cancelar um pedido que já foi aprovado';
         } else {

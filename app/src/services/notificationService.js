@@ -1,14 +1,14 @@
-// Serviço para gerenciar notificações do sistema
+
 const STORAGE_KEY = 'travel_rep_notifications';
 
 export const notificationService = {
   /**
-   * Busca notificações do servidor
-   * @returns {Promise<Array>} Lista de notificações
+   * 
+   * @returns {Promise<Array>} 
    */
   async fetchNotifications() {
     try {
-      // Buscar notificações do servidor
+      
       const response = await fetch('/api/notifications', {
         method: 'GET',
         headers: {
@@ -23,22 +23,22 @@ export const notificationService = {
       }
       
       const data = await response.json();
-      // Salvar no armazenamento local como backup
+      
       this.saveNotifications(data);
       return data;
     } catch (error) {
       console.error('Erro ao buscar notificações:', error);
-      // Retornar notificações locais em caso de falha
+      
       return this.getNotifications();
     }
   },
   /**
-   * Adiciona uma nova notificação
-   * @param {Object} notification - Objeto com dados da notificação
-   * @param {string} notification.title - Título da notificação
-   * @param {string} notification.message - Mensagem da notificação
-   * @param {string} notification.type - Tipo da notificação (success, warning, error, info)
-   * @param {string} notification.orderId - ID do pedido relacionado (opcional)
+   * 
+   * @param {Object} notification - 
+   * @param {string} notification.title 
+   * @param {string} notification.message 
+   * @param {string} notification.type 
+   * @param {string} notification.orderId 
    */
   addNotification(notification) {
     const notifications = this.getNotifications();
@@ -55,15 +55,15 @@ export const notificationService = {
   },
 
   /**
-   * Adiciona notificação de mudança de status de pedido
-   * @param {Object} order - Dados do pedido
-   * @param {string} newStatus - Novo status do pedido
-   * @returns {Promise} Promise com a notificação criada
+   * 
+   * @param {Object} order 
+   * @param {string} newStatus 
+   * @returns {Promise} 
    */
   async addOrderStatusNotification(order, newStatus) {
     let title, message, type;
     
-    // Tradução dos status
+    
     const statusTraducao = {
       'pending': 'Pendente',
       'approved': 'Aprovado',
@@ -92,7 +92,7 @@ export const notificationService = {
     }
     
     try {
-      // Enviar para o servidor
+      
       const response = await fetch('/api/notifications/order-status', {
         method: 'POST',
         headers: {
@@ -114,7 +114,7 @@ export const notificationService = {
       return data;
     } catch (error) {
       console.error('Erro ao salvar notificação no servidor:', error);
-      // Fallback para armazenamento local
+      
       const notification = this.addNotification({
         title,
         message,
@@ -126,8 +126,8 @@ export const notificationService = {
   },
 
   /**
-   * Obtém todas as notificações armazenadas
-   * @returns {Array} Lista de notificações
+   * 
+   * @returns {Array} 
    */
   getNotifications() {
     const storedNotifications = localStorage.getItem(STORAGE_KEY);
@@ -135,18 +135,18 @@ export const notificationService = {
   },
 
   /**
-   * Salva as notificações no localStorage
-   * @param {Array} notifications - Lista de notificações
+   * 
+   * @param {Array} notifications - 
    */
   saveNotifications(notifications) {
-    // Limita o número de notificações armazenadas para evitar problemas de espaço
+    
     const limitedNotifications = notifications.slice(0, 50);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(limitedNotifications));
   },
 
   /**
-   * Marca uma notificação como lida
-   * @param {string} id - ID da notificação
+   * 
+   * @param {string} id 
    */
   markAsRead(id) {
     const notifications = this.getNotifications();
@@ -161,7 +161,7 @@ export const notificationService = {
   },
 
   /**
-   * Marca todas as notificações como lidas
+   * 
    */
   markAllAsRead() {
     const notifications = this.getNotifications();
@@ -174,8 +174,8 @@ export const notificationService = {
   },
 
   /**
-   * Remove uma notificação
-   * @param {string} id - ID da notificação
+   * 
+   * @param {string} id - 
    */
   removeNotification(id) {
     const notifications = this.getNotifications();
@@ -187,15 +187,15 @@ export const notificationService = {
   },
 
   /**
-   * Limpa todas as notificações
+   * 
    */
   clearAllNotifications() {
     this.saveNotifications([]);
   },
 
   /**
-   * Obtém o número de notificações não lidas
-   * @returns {number} Quantidade de notificações não lidas
+   * 
+   * @returns {number} 
    */
   getUnreadCount() {
     const notifications = this.getNotifications();

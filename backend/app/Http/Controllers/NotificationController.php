@@ -9,15 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
         $user = Auth::user();
         
-        // Se for admin, buscar todas as notificações
-        // Se não for admin, buscar apenas notificações do usuário e globais
+        
+        
         if ($user->is_admin) {
             $notifications = Notification::orderBy('created_at', 'desc')->get();
         } else {
@@ -32,9 +30,7 @@ class NotificationController extends Controller
         return response()->json($notifications);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $request->validate([
@@ -58,18 +54,14 @@ class NotificationController extends Controller
         return response()->json($notification, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         $notification = Notification::findOrFail($id);
         return response()->json($notification);
     }
 
-    /**
-     * Mark notification as read
-     */
+
     public function markAsRead(string $id)
     {
         $notification = Notification::findOrFail($id);
@@ -78,9 +70,7 @@ class NotificationController extends Controller
         return response()->json($notification);
     }
 
-    /**
-     * Mark all notifications as read
-     */
+
     public function markAllAsRead()
     {
         $user = Auth::user();
@@ -95,9 +85,6 @@ class NotificationController extends Controller
         return response()->json(['message' => 'All notifications marked as read']);
     }
 
-    /**
-     * Create order status notification
-     */
     public function createOrderStatusNotification(Request $request)
     {
         $request->validate([
@@ -107,7 +94,7 @@ class NotificationController extends Controller
         
         $order = Order::findOrFail($request->order_id);
         
-        // Tradução dos status
+        
         $statusTraducao = [
             'pending' => 'Pendente',
             'approved' => 'Aprovado',
@@ -123,16 +110,13 @@ class NotificationController extends Controller
         $notification->user_id = $order->user_id;
         $notification->order_id = $order->id;
         $notification->type = 'info';
-        $notification->global = false; // Notificação visível apenas para o usuário da viagem
+        $notification->global = false; 
         $notification->read = false;
         $notification->save();
         
         return response()->json($notification, 201);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $notification = Notification::findOrFail($id);

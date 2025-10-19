@@ -11,7 +11,7 @@ export default {
   name: 'BaseToast',
   props: {
     message: { type: String, default: '' },
-    type: { type: String, default: 'info' } // 'success' | 'error' | 'info'
+    type: { type: String, default: 'info' } 
   },
   computed: {
     typeClass() {

@@ -127,8 +127,8 @@ export default {
       }
     },
     handleSearch() {
-      // Método para lidar com a pesquisa em tempo real
-      // Não precisa fazer nada aqui, pois estamos usando computed property
+      
+      
     },
     translateStatus(status) {
       const translations = {

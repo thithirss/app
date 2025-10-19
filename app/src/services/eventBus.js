@@ -1,13 +1,13 @@
 import { reactive } from 'vue';
 
-// Criando um barramento de eventos simples para Vue 3
+
 export const eventBus = {
   events: reactive({}),
   
   /**
-   * Registra um ouvinte para um evento
-   * @param {string} event - Nome do evento
-   * @param {Function} callback - Função a ser executada quando o evento for emitido
+   * 
+   * @param {string} event 
+   * @param {Function} callback 
    */
   on(event, callback) {
     if (!this.events[event]) {
@@ -17,9 +17,9 @@ export const eventBus = {
   },
   
   /**
-   * Remove um ouvinte de um evento
-   * @param {string} event - Nome do evento
-   * @param {Function} callback - Função a ser removida
+   * o
+   * @param {string} event 
+   * @param {Function} callback 
    */
   off(event, callback) {
     if (this.events[event]) {
@@ -28,9 +28,9 @@ export const eventBus = {
   },
   
   /**
-   * Emite um evento com os dados fornecidos
-   * @param {string} event - Nome do evento
-   * @param  {...any} args - Argumentos a serem passados para os callbacks
+   * 
+   * @param {string} event 
+   * @param  {...any} args 
    */
   emit(event, ...args) {
     if (this.events[event]) {

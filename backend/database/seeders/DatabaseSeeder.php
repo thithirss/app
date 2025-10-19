@@ -26,14 +26,14 @@ class DatabaseSeeder extends Seeder
             $admin->save();
         }
 
-        // Usuário padrão
+
         if (!User::where('email', 'user@travelrep.local')->exists()) {
             $user = User::factory()->create([
                 'name' => 'Usuário',
                 'email' => 'user@travelrep.local',
                 'password' => bcrypt('password'),
             ]);
-            // is_admin padrão é false (migration define default)
+
         }
     }
 }
