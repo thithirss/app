@@ -4,6 +4,9 @@ O **Travel REP** é uma plataforma para gestão de viagens corporativas.
 Nela, o usuário pode solicitar viagens informando o destino, o motivo, as datas 
 Essas solicitações aparecem em um painel administrativo, onde o administrador pode **aprovar, negar ou cancelar** o pedido.  
 O solicitante é **notificado automaticamente** sobre qualquer atualização no status da viagem.  
+É possivel editar uma solicitação de viagem se a mesma ainda estiver pendente
+Caso ja tenha sido aprovada a mesma nao pode ser cancelada, apenas se estiver pendente
+Foi utilizado a api do IBGE para popualar cidade e estados automaticamente e facilitar o uso do usuario (https://servicodados.ibge.gov.br/api/v1')
 
 ---
 
